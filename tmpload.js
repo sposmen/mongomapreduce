@@ -12,7 +12,8 @@ process.on("uncaughtException", function (err) {
 var path = require('path'),
   fs = require('graceful-fs'),
   Lazy = require('lazy'),
-  MongoWritableStream = require('mongo-writable-stream');
+  MongoWritableStream = require('mongo-writable-stream'),
+  MongoClient = require('mongodb').MongoClient;
 
 var url = 'mongodb://localhost:27017/mongomapreduce';
 
@@ -47,28 +48,30 @@ var processMovie = function (movId, cb) {
 
   var movieRankInsertStream = new MongoWritableStream({
     url: url,
-    collection: 'ratings'
-  }).on('finish', function(){
-    cb('MovieID:' + movId + ' ended');
+    collection: 'movies'
   });
-
 
   var movieRankStream = fs.createReadStream(path.join(__dirname, 'data', 'training_set', title));
 
+  var collection = dbConnection.collection("simple_document_insert_collection_no_safe");
+  // Insert a single document
+  collection.insertOne({hello:'world_no_safe'});
+
   new Lazy(movieRankStream).lines.map(String).skip(1).forEach(function (row) {
 
-    var rowData = row.split(','),
-      rowObject = {
-        movieId: movId,
-        customerId: rowData[0],
-        rating: parseInt(rowData[1]),
-        date: new Date(rowData[2])
-      };
+    var rowData = row.split(',');
 
-    movieRankInsertStream.write(rowObject);
 
+
+    movieRankInsertStream.write({
+      movieId: movId,
+      customerId: rowData[0],
+      rating: parseInt(rowData[1]),
+      date: new Date(rowData[2])
+    });
   }).on('pipe', function () {
     movieRankInsertStream.end();
+    cb('MovieID:' + movId + ' ended');
   });
 };
 
@@ -84,4 +87,15 @@ var singleThrottler = function (movId) {
   }
 };
 
-singleThrottler(1);
+var dbConnection = null;
+
+// Use connect method to connect to the Server
+MongoClient.connect(url, function(err, db) {
+  console.log("Connected correctly to server");
+
+
+  dbConnection = db
+  singleThrottler(1);
+
+});;
+
