@@ -1,0 +1,19 @@
+{
+  "name": "map_reduce",
+  "version": "0.0.1",
+  "description": "",
+  "main": "MapReduce.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "graceful-fs": "^4.1.2",
+    "lazy": "^1.0.11",
+    "minimist": "^1.2.0"
+  }
+}
