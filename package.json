@@ -1,0 +1,19 @@
+{
+  "name": "mongomapreduce",
+  "version": "0.0.1",
+  "description": "## Download data from torrent",
+  "main": "loadToMongoData.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bson": "^0.4.19",
+    "graceful-fs": "^4.1.2",
+    "lazy": "^1.0.11",
+    "mongo-writable-stream": "^0.1.2",
+    "mongodb": "^2.0.48",
+    "throttler": "0.0.1"
+  }
+}
